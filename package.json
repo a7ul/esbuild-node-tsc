@@ -1,21 +1,35 @@
 {
-  "name": "esbuild-ts-node",
+  "name": "esbuild-node-tsc",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "bin": {
-    "esbuild-ts-node": "./dist/index.js"
+    "esbuild-node-tsc": "./dist/index.js",
+    "etsc": "./dist/index.js"
   },
   "license": "MIT",
   "scripts": {
     "build": "tsc"
   },
+  "keywords": [
+    "esbuild",
+    "node",
+    "dev",
+    "tsnode",
+    "ts-node",
+    "tsc",
+    "typescript"
+  ],
   "devDependencies": {
     "@types/node": "^14.6.4",
+    "@types/rimraf": "^3.0.0",
     "typescript": "^4.0.2"
   },
   "dependencies": {
     "cpy": "^8.1.1",
     "esbuild": "^0.7.6",
     "rimraf": "^3.0.2"
+  },
+  "peerDependencies": {
+    "typescript": "*"
   }
 }

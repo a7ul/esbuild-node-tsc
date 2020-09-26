@@ -1,48 +1,28 @@
 #!/usr/bin/env node
+
 import ts, { BuildOptions } from "typescript";
 import { build } from "esbuild";
 import cpy from "cpy";
 import path from "path";
-//@ts-ignore
 import rimraf from "rimraf";
+import { Config, readUserConfig } from "./config";
 
-const config: Config = {
-  outDir: "dist",
-  esbuild: {
-    entryPoints: [] as string[],
-    minify: false,
-    target: "es2015",
-  },
-  assets: {
-    baseDir: "src",
-    filePatterns: ["**", `!**/*.{ts,js,tsx,jsx}`],
-  },
-};
-
-type Config = {
-  outDir?: string;
-  esbuild?: {
-    entryPoints?: string[];
-    minify?: boolean;
-    target?: string;
-  };
-  assets?: {
-    baseDir?: string;
-    filePatterns?: string[];
-  };
-};
+const cwd = process.cwd();
 
 function getTSConfig() {
   const tsConfigFile = ts.findConfigFile(
-    process.cwd(),
+    cwd,
     ts.sys.fileExists,
     "tsconfig.json"
   );
-  const configFile = ts.readConfigFile(tsConfigFile!, ts.sys.readFile);
+  if (!tsConfigFile) {
+    throw new Error(`tsconfig.json not found in the current directory! ${cwd}`);
+  }
+  const configFile = ts.readConfigFile(tsConfigFile, ts.sys.readFile);
   const tsConfig = ts.parseJsonConfigFileContent(
     configFile.config,
     ts.sys,
-    process.cwd()
+    cwd
   );
   return { tsConfig, tsConfigFile };
 }
@@ -50,14 +30,45 @@ function getTSConfig() {
 type TSConfig = ReturnType<typeof getTSConfig>["tsConfig"];
 
 function esBuildSourceMapOptions(tsConfig: TSConfig) {
-  let sourcemap = tsConfig.options.sourceMap;
-  if (!sourcemap) {
+  if (!tsConfig.options.sourceMap) {
     return false;
   }
-  if (tsConfig.options.inlineSourceMap) {
-    return "inline";
-  }
-  return "external";
+  return tsConfig.options.inlineSourceMap ? "inline" : "external";
+}
+
+function getBuildMetadata(userConfig: Config) {
+  const { tsConfig, tsConfigFile } = getTSConfig();
+
+  const outDir = tsConfig.options.outDir || userConfig.outDir || "dist";
+
+  const esbuildEntryPoints = userConfig.esbuild?.entryPoints || [];
+  const srcFiles = [...tsConfig.fileNames, ...esbuildEntryPoints];
+  const sourcemap = esBuildSourceMapOptions(tsConfig);
+  const target =
+    userConfig.esbuild?.target ||
+    tsConfig?.raw?.compilerOptions?.target ||
+    "es6";
+
+  const minify = userConfig.esbuild?.minify || false;
+
+  const esbuildOptions: BuildOptions = {
+    outdir: outDir,
+    entryPoints: srcFiles,
+    sourcemap,
+    target,
+    minify,
+    tsconfig: tsConfigFile,
+  };
+
+  const assetPatterns = userConfig.assets?.filePatterns || ["**"];
+
+  const assetsOptions = {
+    baseDir: userConfig.assets?.baseDir || "src",
+    outDir: outDir,
+    patterns: [...assetPatterns, `!**/*.{ts,js,tsx,jsx}`],
+  };
+
+  return { outDir, esbuildOptions, assetsOptions };
 }
 
 async function buildSourceFiles(esbuildOptions: Partial<BuildOptions>) {
@@ -83,41 +94,11 @@ async function copyNonSourceFiles({
   });
 }
 
-function getBuildMetadata(userConfig: Config) {
-  const { tsConfig, tsConfigFile } = getTSConfig();
-
-  const outDir = tsConfig.options.outDir || config.outDir || "dist";
-
-  const esbuildEntryPoints = userConfig.esbuild?.entryPoints || [];
-  const srcFiles = [...tsConfig.fileNames, ...esbuildEntryPoints];
-  const sourcemap = esBuildSourceMapOptions(tsConfig);
-  const target =
-    config.esbuild?.target || tsConfig?.raw?.compilerOptions?.target || "es6";
-  const minify = config.esbuild?.minify || false;
-
-  const esbuildOptions: BuildOptions = {
-    outdir: outDir,
-    entryPoints: srcFiles,
-    sourcemap,
-    target,
-    minify,
-    tsconfig: tsConfigFile,
-  };
-
-  const assetsOptions = {
-    baseDir: userConfig.assets?.baseDir || "src",
-    outDir: outDir,
-    patterns: userConfig.assets?.filePatterns || [
-      "**",
-      `!**/*.{ts,js,tsx,jsx}`,
-    ],
-  };
-
-  return { outDir, esbuildOptions, assetsOptions };
-}
-
 async function main() {
+  const config = await readUserConfig(path.resolve(cwd, "etsc.config.js"));
+
   const { outDir, esbuildOptions, assetsOptions } = getBuildMetadata(config);
+
   rimraf.sync(outDir);
 
   await Promise.all([
