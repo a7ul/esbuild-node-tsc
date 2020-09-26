@@ -1,20 +1,48 @@
-import { build } from "esbuild";
+#!/usr/bin/env node
+
+import { build, BuildOptions } from "esbuild";
 import glob from "globby";
 import cpy from "cpy";
 import path from "path";
+//@ts-ignore
+import rimraf from "rimraf";
 
-async function buildSourceFiles(srcDir: string, destDir: string) {
-  const sourceFiles = await glob(`${srcDir}/**/*.{js,ts,tsx,jsx}`);
-  return await build({
-    entryPoints: sourceFiles,
+const cwd = process.cwd();
+
+const config: {
+  src: string;
+  dest: string;
+  esbuild: BuildOptions;
+  assets: {
+    files: string[];
+  };
+} = {
+  src: "src",
+  dest: "dist",
+  esbuild: {
+    entryPoints: ["**/*.{js,ts,tsx,jsx}"],
     minify: false,
     sourcemap: "inline",
     target: "es2015",
     bundle: false,
     format: "cjs",
     platform: "node",
+    tsconfig: "./tsconfig.json",
+  },
+  assets: {
+    files: ["**", `!**/*.{ts,js,tsx,jsx}`],
+  },
+};
+
+async function buildSourceFiles(srcDir: string, destDir: string) {
+  const esbuildOptions = {
+    ...config.esbuild,
+    entryPoints: await glob(
+      config.esbuild.entryPoints?.map((p) => path.resolve(srcDir, p)) || []
+    ),
     outdir: destDir,
-  });
+  };
+  return await build(esbuildOptions);
 }
 
 async function copyNonSourceFiles(srcDir: string, destDir: string) {
@@ -26,8 +54,9 @@ async function copyNonSourceFiles(srcDir: string, destDir: string) {
 }
 
 async function main() {
-  const src = "src";
-  const dest = "build";
+  const src = config.src;
+  const dest = config.dest;
+  rimraf.sync(dest);
   await Promise.all([
     buildSourceFiles(src, dest),
     copyNonSourceFiles(src, dest),

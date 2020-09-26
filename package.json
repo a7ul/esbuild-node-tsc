@@ -1,9 +1,9 @@
 {
-  "name": "tsbuild-node",
+  "name": "esbuild-ts-node",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "bin": {
-    "tsbuild-node": "./dist/index.js"
+    "esbuild-ts-node": "./dist/index.js"
   },
   "license": "MIT",
   "scripts": {
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "cpy": "^8.1.1",
-    "esbuild": "^0.6.32"
+    "esbuild": "^0.7.6",
+    "rimraf": "^3.0.2"
   }
 }
