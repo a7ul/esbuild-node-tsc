@@ -1,65 +1,128 @@
 #!/usr/bin/env node
-
-import { build, BuildOptions } from "esbuild";
-import glob from "globby";
+import ts, { BuildOptions } from "typescript";
+import { build } from "esbuild";
 import cpy from "cpy";
 import path from "path";
 //@ts-ignore
 import rimraf from "rimraf";
 
-const cwd = process.cwd();
-
-const config: {
-  src: string;
-  dest: string;
-  esbuild: BuildOptions;
-  assets: {
-    files: string[];
-  };
-} = {
-  src: "src",
-  dest: "dist",
+const config: Config = {
+  outDir: "dist",
   esbuild: {
-    entryPoints: ["**/*.{js,ts,tsx,jsx}"],
+    entryPoints: [] as string[],
     minify: false,
-    sourcemap: "inline",
     target: "es2015",
-    bundle: false,
-    format: "cjs",
-    platform: "node",
-    tsconfig: "./tsconfig.json",
   },
   assets: {
-    files: ["**", `!**/*.{ts,js,tsx,jsx}`],
+    baseDir: "src",
+    filePatterns: ["**", `!**/*.{ts,js,tsx,jsx}`],
   },
 };
 
-async function buildSourceFiles(srcDir: string, destDir: string) {
-  const esbuildOptions = {
-    ...config.esbuild,
-    entryPoints: await glob(
-      config.esbuild.entryPoints?.map((p) => path.resolve(srcDir, p)) || []
-    ),
-    outdir: destDir,
+type Config = {
+  outDir?: string;
+  esbuild?: {
+    entryPoints?: string[];
+    minify?: boolean;
+    target?: string;
   };
-  return await build(esbuildOptions);
+  assets?: {
+    baseDir?: string;
+    filePatterns?: string[];
+  };
+};
+
+function getTSConfig() {
+  const tsConfigFile = ts.findConfigFile(
+    process.cwd(),
+    ts.sys.fileExists,
+    "tsconfig.json"
+  );
+  const configFile = ts.readConfigFile(tsConfigFile!, ts.sys.readFile);
+  const tsConfig = ts.parseJsonConfigFileContent(
+    configFile.config,
+    ts.sys,
+    process.cwd()
+  );
+  return { tsConfig, tsConfigFile };
 }
 
-async function copyNonSourceFiles(srcDir: string, destDir: string) {
-  const relativeDestDir = path.relative(srcDir, destDir);
-  return await cpy(["**", `!**/*.{ts,js,tsx,jsx}`], relativeDestDir, {
-    cwd: srcDir,
+type TSConfig = ReturnType<typeof getTSConfig>["tsConfig"];
+
+function esBuildSourceMapOptions(tsConfig: TSConfig) {
+  let sourcemap = tsConfig.options.sourceMap;
+  if (!sourcemap) {
+    return false;
+  }
+  if (tsConfig.options.inlineSourceMap) {
+    return "inline";
+  }
+  return "external";
+}
+
+async function buildSourceFiles(esbuildOptions: Partial<BuildOptions>) {
+  return await build({
+    ...esbuildOptions,
+    bundle: false,
+    format: "cjs",
+    platform: "node",
+  });
+}
+
+type AssetsOptions = { baseDir: string; outDir: string; patterns: string[] };
+
+async function copyNonSourceFiles({
+  baseDir,
+  outDir,
+  patterns,
+}: AssetsOptions) {
+  const relativeOutDir = path.relative(baseDir, outDir);
+  return await cpy(patterns, relativeOutDir, {
+    cwd: baseDir,
     parents: true,
   });
 }
 
+function getBuildMetadata(userConfig: Config) {
+  const { tsConfig, tsConfigFile } = getTSConfig();
+
+  const outDir = tsConfig.options.outDir || config.outDir || "dist";
+
+  const esbuildEntryPoints = userConfig.esbuild?.entryPoints || [];
+  const srcFiles = [...tsConfig.fileNames, ...esbuildEntryPoints];
+  const sourcemap = esBuildSourceMapOptions(tsConfig);
+  const target =
+    config.esbuild?.target || tsConfig?.raw?.compilerOptions?.target || "es6";
+  const minify = config.esbuild?.minify || false;
+
+  const esbuildOptions: BuildOptions = {
+    outdir: outDir,
+    entryPoints: srcFiles,
+    sourcemap,
+    target,
+    minify,
+    tsconfig: tsConfigFile,
+  };
+
+  const assetsOptions = {
+    baseDir: userConfig.assets?.baseDir || "src",
+    outDir: outDir,
+    patterns: userConfig.assets?.filePatterns || [
+      "**",
+      `!**/*.{ts,js,tsx,jsx}`,
+    ],
+  };
+
+  return { outDir, esbuildOptions, assetsOptions };
+}
+
 async function main() {
-  const src = config.src;
-  const dest = config.dest;
-  rimraf.sync(dest);
+  const { outDir, esbuildOptions, assetsOptions } = getBuildMetadata(config);
+  rimraf.sync(outDir);
+
   await Promise.all([
-    buildSourceFiles(src, dest),
-    copyNonSourceFiles(src, dest),
+    buildSourceFiles(esbuildOptions),
+    copyNonSourceFiles(assetsOptions),
   ]);
 }
 
