@@ -4,7 +4,10 @@ Build your Typescript Node.js projects using blazing fast **[esbuild](https://gi
 
 Since esbuild can build large typescript node projects in subsecond speeds, this is quite useful for development builds too if you want to stick with `tsc` for production builds.
 
-<img src="https://github.com/a7ul/esbuild-node-tsc/releases/download/v1.0.1/demo-img.gif" alt="demo" />
+<div style="text-align:center">
+  <img src="https://user-images.githubusercontent.com/4029423/94347242-c6497600-0032-11eb-8a66-4311adf04554.gif" width="638" height="750">
+</div>
+<br>
 
 **_Please not this library doesnt do typechecking. For typechecking please continue to use tsc._**
 
