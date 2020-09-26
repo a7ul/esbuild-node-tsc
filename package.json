@@ -1,5 +1,6 @@
 {
   "name": "esbuild-node-tsc",
+  "description": "Build your Typescript Node.js projects using blazing fast esbuild",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "bin": {
