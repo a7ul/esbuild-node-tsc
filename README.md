@@ -75,7 +75,7 @@ And add a `nodemon.json`
   "watch": ["src"],
   "ignore": ["src/**/*.test.ts"],
   "ext": "ts,mjs,js,json,graphql",
-  "exec": "etsc",
+  "exec": "etsc && node ./dist/index.js",
   "legacyWatch": true
 }
 ```
