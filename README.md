@@ -35,7 +35,7 @@ Additionally, you can add it to your build scripts
   "name": "myproject",
   "version": "0.1.0",
   "scripts": {
-    "dev": "etsc" <------ Add etsc or esbuild-node-tsc
+    "dev": "etsc" 
   }
 }
 ```
