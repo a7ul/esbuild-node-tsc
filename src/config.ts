@@ -4,6 +4,7 @@ export type Config = Partial<{
     entryPoints?: string[];
     minify?: boolean;
     target?: string;
+    bundle?: boolean;
   };
   assets: {
     baseDir?: string;
