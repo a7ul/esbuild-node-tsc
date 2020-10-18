@@ -39,7 +39,7 @@ function esBuildSourceMapOptions(tsConfig: TSConfig) {
 function getBuildMetadata(userConfig: Config) {
   const { tsConfig, tsConfigFile } = getTSConfig();
 
-  const outDir = tsConfig.options.outDir || userConfig.outDir || "dist";
+  const outDir = userConfig.outDir || tsConfig.options.outDir || "dist";
 
   const esbuildEntryPoints = userConfig.esbuild?.entryPoints || [];
   const srcFiles = [...tsConfig.fileNames, ...esbuildEntryPoints];

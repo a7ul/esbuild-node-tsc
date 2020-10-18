@@ -9,6 +9,7 @@
   },
   "license": "MIT",
   "scripts": {
+    "prepare": "tsc",
     "build": "tsc"
   },
   "keywords": [
