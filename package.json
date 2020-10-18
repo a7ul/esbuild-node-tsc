@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "cpy": "^8.1.1",
-    "esbuild": "^0.7.6",
+    "esbuild": "^0.7.17",
     "rimraf": "^3.0.2"
   },
   "peerDependencies": {
