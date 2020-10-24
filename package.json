@@ -4,8 +4,8 @@
   "version": "1.0.3",
   "main": "./dist/index.js",
   "bin": {
-    "esbuild-node-tsc": "./dist/index.js",
-    "etsc": "./dist/index.js"
+    "esbuild-node-tsc": "dist/index.js",
+    "etsc": "dist/index.js"
   },
   "license": "MIT",
   "scripts": {
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "cpy": "^8.1.1",
-    "esbuild": "^0.7.17",
+    "esbuild": "^0.7.19",
     "rimraf": "^3.0.2"
   },
   "peerDependencies": {
