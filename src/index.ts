@@ -30,10 +30,27 @@ function getTSConfig() {
 type TSConfig = ReturnType<typeof getTSConfig>["tsConfig"];
 
 function esBuildSourceMapOptions(tsConfig: TSConfig) {
-  if (!tsConfig.options.sourceMap) {
+  const { sourceMap, inlineSources, inlineSourceMap } = tsConfig.options;
+
+  // inlineSources requires either inlineSourceMap or sourceMap
+  if (inlineSources && !inlineSourceMap && !sourceMap) {
     return false;
   }
-  return tsConfig.options.inlineSourceMap ? "inline" : "external";
+
+  // Mutually exclusive in tsconfig
+  if (sourceMap && inlineSourceMap) {
+    return false;
+  }
+
+  if ((inlineSources && sourceMap) || sourceMap) {
+    return "external";
+  }
+
+  if (inlineSourceMap) {
+    return "inline";
+  }
+
+  return false;
 }
 
 function getBuildMetadata(userConfig: Config) {
