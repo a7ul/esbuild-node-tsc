@@ -43,7 +43,7 @@ function esBuildSourceMapOptions(tsConfig: TSConfig) {
   }
 
   if ((inlineSources && sourceMap) || sourceMap) {
-    return "external";
+    return true;
   }
 
   if (inlineSourceMap) {
