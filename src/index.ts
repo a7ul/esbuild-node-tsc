@@ -42,7 +42,7 @@ function esBuildSourceMapOptions(tsConfig: TSConfig) {
     return false;
   }
 
-  if ((inlineSources && sourceMap) || sourceMap) {
+  if (sourceMap) {
     return true;
   }
 
