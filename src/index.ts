@@ -42,15 +42,11 @@ function esBuildSourceMapOptions(tsConfig: TSConfig) {
     return false;
   }
 
-  if ((inlineSources && sourceMap) || sourceMap) {
-    return "external";
-  }
-
   if (inlineSourceMap) {
     return "inline";
   }
 
-  return false;
+  return sourceMap;
 }
 
 function getBuildMetadata(userConfig: Config) {
