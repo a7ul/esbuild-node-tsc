@@ -42,15 +42,11 @@ function esBuildSourceMapOptions(tsConfig: TSConfig) {
     return false;
   }
 
-  if (sourceMap) {
-    return true;
-  }
-
   if (inlineSourceMap) {
     return "inline";
   }
-
-  return false;
+  
+  return sourceMap;
 }
 
 function getBuildMetadata(userConfig: Config) {
