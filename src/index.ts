@@ -45,7 +45,7 @@ function esBuildSourceMapOptions(tsConfig: TSConfig) {
   if (inlineSourceMap) {
     return "inline";
   }
-  
+
   return sourceMap;
 }
 
