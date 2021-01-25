@@ -9,12 +9,8 @@ import { Config, readUserConfig } from "./config";
 
 const cwd = process.cwd();
 
-function getTSConfig() {
-  const tsConfigFile = ts.findConfigFile(
-    cwd,
-    ts.sys.fileExists,
-    "tsconfig.json"
-  );
+function getTSConfig(_tsConfigFile = "tsconfig.json") {
+  const tsConfigFile = ts.findConfigFile(cwd, ts.sys.fileExists, _tsConfigFile);
   if (!tsConfigFile) {
     throw new Error(`tsconfig.json not found in the current directory! ${cwd}`);
   }
@@ -50,7 +46,7 @@ function esBuildSourceMapOptions(tsConfig: TSConfig) {
 }
 
 function getBuildMetadata(userConfig: Config) {
-  const { tsConfig, tsConfigFile } = getTSConfig();
+  const { tsConfig, tsConfigFile } = getTSConfig(userConfig.tsConfigFile);
 
   const outDir = userConfig.outDir || tsConfig.options.outDir || "dist";
 
