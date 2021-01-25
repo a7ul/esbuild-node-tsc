@@ -1,5 +1,6 @@
 export type Config = Partial<{
   outDir: string;
+  tsConfigFile?: string;
   esbuild: {
     entryPoints?: string[];
     minify?: boolean;
