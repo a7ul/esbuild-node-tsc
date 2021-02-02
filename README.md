@@ -6,6 +6,15 @@ Since esbuild can build large typescript node projects in subsecond speeds, this
 
 **_Please note this library doesnt do typechecking. For typechecking please continue to use tsc._**
 
+## Alternatives
+
+Recently, Many alternatives have been released that allow using esbuild with nodejs projects.
+
+I would like to promote a few which I believe does a better job than this library. You should probably use/switch to them from now on.
+
+- **[esbuild-register](https://github.com/egoist/esbuild-register) by [@egoist](https://github.com/egoist)**
+- **[ts-eager](https://github.com/mhart/ts-eager) by [@mhart](https://github.com/mhart)**
+
 ## How does it work?
 
 esbuild-node-tsc reads the tsconfig.json and builds the typescript project using esbuild. esbuild is the fastest typescript builder around. It also copies the non ts files such as json, graphql files, images,etc to the dist folder. If the assets are not copied correctly check the configuration guide below.
