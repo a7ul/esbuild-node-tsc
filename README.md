@@ -44,7 +44,7 @@ Additionally, you can add it to your build scripts
   "name": "myproject",
   "version": "0.1.0",
   "scripts": {
-    "dev": "etsc" 
+    "dev": "etsc"
   }
 }
 ```
@@ -122,7 +122,15 @@ module.exports = {
 };
 ```
 
-All of the above fields are optional
+All of the above fields are optional.
+
+If you want to use different config files for different types of builds you can do so using the param `--config`. Example:
+
+```
+  "scripts": {
+    "build": "etsc --config=etsc.config.build.js"
+  }
+```
 
 ## License
 

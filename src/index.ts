@@ -5,9 +5,13 @@ import { build } from "esbuild";
 import cpy from "cpy";
 import path from "path";
 import rimraf from "rimraf";
+import yargs from 'yargs/yargs';
+import { hideBin } from 'yargs/helpers';
+import { Argv } from 'yargs';
 import { Config, readUserConfig } from "./config";
 
 const cwd = process.cwd();
+const { argv } = yargs(hideBin(process.argv));
 
 function getTSConfig(_tsConfigFile = "tsconfig.json") {
   const tsConfigFile = ts.findConfigFile(cwd, ts.sys.fileExists, _tsConfigFile);
@@ -104,7 +108,9 @@ async function copyNonSourceFiles({
 }
 
 async function main() {
-  const config = await readUserConfig(path.resolve(cwd, "etsc.config.js"));
+  const configFilename = <string>argv?.config || 'etsc.config.js';
+
+  const config = await readUserConfig(path.resolve(cwd, configFilename));
 
   const { outDir, esbuildOptions, assetsOptions } = getBuildMetadata(config);
 
