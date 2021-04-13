@@ -61,8 +61,8 @@ function getBuildMetadata(userConfig: Config) {
     userConfig.esbuild?.target ||
     tsConfig?.raw?.compilerOptions?.target ||
     "es6";
-
   const minify = userConfig.esbuild?.minify || false;
+  const plugins = userConfig.esbuild?.plugins || [];
 
   const esbuildOptions: BuildOptions = {
     outdir: outDir,
@@ -70,6 +70,7 @@ function getBuildMetadata(userConfig: Config) {
     sourcemap,
     target,
     minify,
+    plugins,
     tsconfig: tsConfigFile,
   };
 
