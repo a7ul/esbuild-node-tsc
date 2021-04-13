@@ -1,3 +1,5 @@
+import type { Plugin } from 'esbuild'
+
 export type Config = Partial<{
   outDir: string;
   tsConfigFile?: string;
@@ -5,6 +7,7 @@ export type Config = Partial<{
     entryPoints?: string[];
     minify?: boolean;
     target?: string;
+    plugins?: Plugin[]
   };
   assets: {
     baseDir?: string;
