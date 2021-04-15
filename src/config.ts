@@ -19,7 +19,8 @@ export async function readUserConfig(configPath: string): Promise<Config> {
   try {
     return require(configPath);
   } catch (err) {
-    // Ignore the read error
+    console.error(err);
+    console.log('Using default config');
   }
   return {};
 }
