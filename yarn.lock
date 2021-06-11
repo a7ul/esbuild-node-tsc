@@ -317,10 +317,10 @@ emoji-regex@^8.0.0:
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-8.0.0.tgz#e818fd69ce5ccfcb404594f842963bf53164cc37"
   integrity sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==
 
-esbuild@^0.11.11:
-  version "0.11.11"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.11.11.tgz#8f235e0a1a34253a47fd80d51f12084dd98074bd"
-  integrity sha512-iq5YdV63vY/nUAFIvY92BXVkYjMbOchnofLKoLKMPZIa4uuIJAJG9WRA+ZRjQBZbrsORUwvZcANeG2d3p46PJQ==
+esbuild@^0.12.8:
+  version "0.12.8"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.12.8.tgz#ac90da77cb3bfbf49ab815200bcef7ffe1a3348f"
+  integrity sha512-sx/LwlP/SWTGsd9G4RlOPrXnIihAJ2xwBUmzoqe2nWwbXORMQWtAGNJNYLBJJqa3e9PWvVzxdrtyFZJcr7D87g==
 
 escalade@^3.1.1:
   version "3.1.1"
