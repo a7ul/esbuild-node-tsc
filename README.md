@@ -122,6 +122,7 @@ module.exports = {
   },
   assets: {
     baseDir: "src",
+    outDir: "./dist",
     filePatterns: ["**/*.json"],
   },
 };

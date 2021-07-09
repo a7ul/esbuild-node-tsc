@@ -5,9 +5,9 @@ import { build } from "esbuild";
 import cpy from "cpy";
 import path from "path";
 import rimraf from "rimraf";
-import yargs from 'yargs/yargs';
-import { hideBin } from 'yargs/helpers';
-import { Argv } from 'yargs';
+import yargs from "yargs/yargs";
+import { hideBin } from "yargs/helpers";
+import { Argv } from "yargs";
 import { Config, readUserConfig } from "./config";
 
 const cwd = process.cwd();
@@ -78,7 +78,7 @@ function getBuildMetadata(userConfig: Config) {
 
   const assetsOptions = {
     baseDir: userConfig.assets?.baseDir || "src",
-    outDir: outDir,
+    outDir: userConfig.assets?.outDir || outDir,
     patterns: [...assetPatterns, `!**/*.{ts,js,tsx,jsx}`],
   };
 
@@ -109,7 +109,7 @@ async function copyNonSourceFiles({
 }
 
 async function main() {
-  const configFilename = <string>argv?.config || 'etsc.config.js';
+  const configFilename = <string>argv?.config || "etsc.config.js";
 
   const config = await readUserConfig(path.resolve(cwd, configFilename));
 
