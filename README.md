@@ -10,7 +10,7 @@ Since esbuild can build large typescript node projects in subsecond speeds, this
 
 Recently, Many alternatives have been released that allow using esbuild with nodejs projects.
 
-I would like to promote a few which I believe does a better job than this library. You should probably use/switch to them from now on.
+You could try these too. They solve the same problem but using require hooks instead.
 
 - **[esbuild-register](https://github.com/egoist/esbuild-register) by [@egoist](https://github.com/egoist)**
 - **[ts-eager](https://github.com/mhart/ts-eager) by [@mhart](https://github.com/mhart)**
