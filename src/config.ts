@@ -19,7 +19,7 @@ export type Config = Partial<{
 export async function readUserConfig(configPath: string): Promise<Config> {
   try {
     return require(configPath);
-  } catch (err) {
+  } catch (err: any) {
     if (err.code !== "MODULE_NOT_FOUND") {
       console.error(err);
     }
