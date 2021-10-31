@@ -22,7 +22,7 @@ esbuild-node-tsc reads the tsconfig.json and builds the typescript project using
 ## Installation
 
 ```
-npm install --save-dev esbuild-node-tsc
+npm install --save-dev esbuild esbuild-node-tsc
 ```
 
 ## Usage
@@ -99,7 +99,6 @@ npm run dev
 
 <img src="https://user-images.githubusercontent.com/4029423/94347242-c6497600-0032-11eb-8a66-4311adf04554.gif" width="638" height="750">
 
-
 ## Optional configuration
 
 By default esbuild-node-tsc should work out of the box for your project since it reads the necessary configuration from your tsconfig.json
@@ -109,16 +108,14 @@ But if things are not working as expected you can configure esbuild-node-tsc by 
 Example `etsc.config.js`
 
 ```js
-const esbuildPluginTsc = require('esbuild-plugin-tsc');
+const esbuildPluginTsc = require("esbuild-plugin-tsc");
 
 module.exports = {
   outDir: "./dist",
   esbuild: {
     minify: false,
     target: "es2015",
-    plugins: [
-      esbuildPluginTsc(),
-    ],
+    plugins: [esbuildPluginTsc()],
   },
   assets: {
     baseDir: "src",
