@@ -86,10 +86,10 @@ function getBuildMetadata(userConfig: Config) {
 
 async function buildSourceFiles(esbuildOptions: Partial<BuildOptions>) {
   return await build({
-    ...esbuildOptions,
     bundle: false,
     format: "cjs",
     platform: "node",
+    ...esbuildOptions,
   });
 }
 
