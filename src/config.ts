@@ -8,6 +8,7 @@ export type Config = Partial<{
     minify?: boolean;
     target?: string;
     plugins?: Plugin[];
+    format?: "cjs" | "esm";
   };
   assets: {
     baseDir?: string;
