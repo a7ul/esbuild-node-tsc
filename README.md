@@ -12,6 +12,7 @@ Recently, Many alternatives have been released that allow using esbuild with nod
 
 You could try these too. They solve the same problem but using require hooks instead.
 
+- **[esbuild-node-loader]**(https://github.com/antfu/esbuild-node-loader) by [@antfu](https://github.com/antfu)
 - **[esbuild-register](https://github.com/egoist/esbuild-register) by [@egoist](https://github.com/egoist)**
 - **[ts-eager](https://github.com/mhart/ts-eager) by [@mhart](https://github.com/mhart)**
 
