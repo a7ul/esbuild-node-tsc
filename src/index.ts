@@ -4,7 +4,6 @@ import ts, { BuildOptions } from "typescript";
 import { build } from "esbuild";
 import cpy from "cpy";
 import path from "path";
-import rimraf from "rimraf";
 import yargs from "yargs/yargs";
 import { hideBin } from "yargs/helpers";
 import { Config, readUserConfig } from "./config";
@@ -114,9 +113,7 @@ async function main() {
 
   const config = await readUserConfig(path.resolve(cwd, configFilename));
 
-  const { outDir, esbuildOptions, assetsOptions } = getBuildMetadata(config);
-
-  rimraf.sync(outDir);
+  const { esbuildOptions, assetsOptions } = getBuildMetadata(config);
 
   await Promise.all([
     buildSourceFiles(esbuildOptions),
