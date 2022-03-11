@@ -29,7 +29,7 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "cpy": "^9.0.1",
+    "cpy": "^8.1.2",
     "rimraf": "^3.0.2",
     "yargs": "^17.3.1"
   },

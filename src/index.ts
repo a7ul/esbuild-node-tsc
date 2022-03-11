@@ -10,7 +10,15 @@ import { hideBin } from "yargs/helpers";
 import { Config, readUserConfig } from "./config";
 
 const cwd = process.cwd();
-const { argv } = yargs(hideBin(process.argv));
+const { argv } = yargs(hideBin(process.argv))
+  .option("config", {
+    describe: "path to config file",
+    type: "string",
+  })
+  .option("clean", {
+    describe: "clean output directory before build",
+    type: "boolean",
+  });
 
 function getTSConfig(_tsConfigFile = "tsconfig.json") {
   const tsConfigFile = ts.findConfigFile(cwd, ts.sys.fileExists, _tsConfigFile);
@@ -110,12 +118,12 @@ async function copyNonSourceFiles({
 
 async function main() {
   const configFilename = <string>(await argv)?.config || "etsc.config.js";
-
+  const clean = <boolean>(await argv)?.clean || false;
   const config = await readUserConfig(path.resolve(cwd, configFilename));
 
   const { outDir, esbuildOptions, assetsOptions } = getBuildMetadata(config);
 
-  if (config.clean) {
+  if (clean) {
     rimraf.sync(outDir);
   }
 
