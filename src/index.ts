@@ -9,7 +9,15 @@ import { hideBin } from "yargs/helpers";
 import { Config, readUserConfig } from "./config";
 
 const cwd = process.cwd();
-const { argv } = yargs(hideBin(process.argv));
+const { argv } = yargs(hideBin(process.argv))
+  .option("config", {
+    describe: "path to config file",
+    type: "string",
+  })
+  .option("clean", {
+    describe: "clean output directory before build",
+    type: "boolean",
+  });
 
 function getTSConfig(_tsConfigFile = "tsconfig.json") {
   const tsConfigFile = ts.findConfigFile(cwd, ts.sys.fileExists, _tsConfigFile);
@@ -61,7 +69,7 @@ function getBuildMetadata(userConfig: Config) {
     "es6";
   const minify = userConfig.esbuild?.minify || false;
   const plugins = userConfig.esbuild?.plugins || [];
-  const format = userConfig.esbuild?.format || 'cjs'
+  const format = userConfig.esbuild?.format || "cjs";
 
   const esbuildOptions: BuildOptions = {
     outdir: outDir,
@@ -71,7 +79,7 @@ function getBuildMetadata(userConfig: Config) {
     minify,
     plugins,
     tsconfig: tsConfigFile,
-    format
+    format,
   };
 
   const assetPatterns = userConfig.assets?.filePatterns || ["**"];
@@ -104,14 +112,14 @@ async function copyNonSourceFiles({
   const relativeOutDir = path.relative(baseDir, outDir);
   return await cpy(patterns, relativeOutDir, {
     cwd: baseDir,
-    parents: true,
   });
 }
 
 async function main() {
   const configFilename = <string>(await argv)?.config || "etsc.config.js";
-
+  const clean = <boolean>(await argv)?.clean || false;
   const config = await readUserConfig(path.resolve(cwd, configFilename));
+
 
   const { esbuildOptions, assetsOptions } = getBuildMetadata(config);
 

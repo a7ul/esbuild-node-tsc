@@ -2,6 +2,7 @@ import type { Plugin } from "esbuild";
 
 export type Config = Partial<{
   outDir: string;
+  clean?: boolean;
   tsConfigFile?: string;
   esbuild: {
     entryPoints?: string[];
