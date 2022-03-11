@@ -113,6 +113,7 @@ const esbuildPluginTsc = require("esbuild-plugin-tsc");
 
 module.exports = {
   outDir: "./dist",
+  clean: false,
   esbuild: {
     minify: false,
     target: "es2015",

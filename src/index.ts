@@ -62,7 +62,7 @@ function getBuildMetadata(userConfig: Config) {
     "es6";
   const minify = userConfig.esbuild?.minify || false;
   const plugins = userConfig.esbuild?.plugins || [];
-  const format = userConfig.esbuild?.format || 'cjs'
+  const format = userConfig.esbuild?.format || "cjs";
 
   const esbuildOptions: BuildOptions = {
     outdir: outDir,
@@ -72,7 +72,7 @@ function getBuildMetadata(userConfig: Config) {
     minify,
     plugins,
     tsconfig: tsConfigFile,
-    format
+    format,
   };
 
   const assetPatterns = userConfig.assets?.filePatterns || ["**"];
@@ -105,7 +105,6 @@ async function copyNonSourceFiles({
   const relativeOutDir = path.relative(baseDir, outDir);
   return await cpy(patterns, relativeOutDir, {
     cwd: baseDir,
-    parents: true,
   });
 }
 
@@ -116,7 +115,9 @@ async function main() {
 
   const { outDir, esbuildOptions, assetsOptions } = getBuildMetadata(config);
 
-  rimraf.sync(outDir);
+  if (config.clean) {
+    rimraf.sync(outDir);
+  }
 
   await Promise.all([
     buildSourceFiles(esbuildOptions),
