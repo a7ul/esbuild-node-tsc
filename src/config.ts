@@ -1,3 +1,4 @@
+import fs from 'fs'
 import type { Plugin } from "esbuild";
 
 export type Config = Partial<{
@@ -19,13 +20,15 @@ export type Config = Partial<{
 }>;
 
 export async function readUserConfig(configPath: string): Promise<Config> {
-  try {
-    return require(configPath);
-  } catch (err: any) {
-    if (err.code !== "MODULE_NOT_FOUND") {
-      console.error(err);
+  if (fs.existsSync(configPath)) {
+    try {
+      return require(configPath);
     }
-    console.log("Using default config");
+    catch (e) {
+      console.log("Config file has some errors:");
+      console.error(e);
+    }
   }
+  console.log("Using default config");
   return {};
 }
