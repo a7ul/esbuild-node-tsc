@@ -113,6 +113,7 @@ async function copyNonSourceFiles({
   const relativeOutDir = path.relative(baseDir, outDir);
   return await cpy(patterns, relativeOutDir, {
     cwd: baseDir,
+    parents: true
   });
 }
 
