@@ -7,7 +7,7 @@ import path from "path";
 import rimraf from "rimraf";
 import yargs from "yargs/yargs";
 import { hideBin } from "yargs/helpers";
-import { Config, readUserConfig } from "./config";
+import { Config, readUserConfig } from "./config.js";
 
 const cwd = process.cwd();
 const { argv } = yargs(hideBin(process.argv))

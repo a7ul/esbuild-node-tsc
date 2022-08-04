@@ -7,6 +7,7 @@
     "esbuild-node-tsc": "dist/index.js",
     "etsc": "dist/index.js"
   },
+  "type": "module",
   "license": "MIT",
   "scripts": {
     "prepare": "tsc",
