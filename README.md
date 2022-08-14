@@ -18,7 +18,10 @@ You could try these too. They solve the same problem but using require hooks ins
 
 ## How does it work?
 
-esbuild-node-tsc reads the tsconfig.json and builds the typescript project using esbuild. esbuild is the fastest typescript builder around. It also copies the non ts files such as json, graphql files, images,etc to the dist folder. If the assets are not copied correctly check the configuration guide below.
+esbuild-node-tsc reads the tsconfig.json and builds the typescript project using esbuild. esbuild is the fastest typescript builder around.
+The purpose of this library is to read tsconfig and translate the options to esbuild.
+
+You can also perform custom postbuild and prebuild operations like copying non ts files such as json, graphql files, images,etc to the dist folder or cleaning up build folder.
 
 ## Installation
 
@@ -63,7 +66,7 @@ Since esbuild can build large typescript projects in subsecond speeds you can us
 To achieve live reloading:
 
 ```
-npm install --save-dev nodemon esbuild-node-tsc
+npm install --save-dev nodemon esbuild-node-tsc esbuild
 ```
 
 Then add the following script to package.json
@@ -100,50 +103,43 @@ npm run dev
 
 <img src="https://user-images.githubusercontent.com/4029423/94347242-c6497600-0032-11eb-8a66-4311adf04554.gif" width="638" height="750">
 
+## v2.0 Migration and Breaking changes 🌱
+
+In v2.0, esbuild-node-tsc no longer has cpy and rimraf preinstalled and doesnt perform any non source file copying automatically.
+Instead it exposes prebuild and postbuild hooks which can be used to perform custom operations. See the example below for more details.
+
 ## Optional configuration
 
 By default esbuild-node-tsc should work out of the box for your project since it reads the necessary configuration from your tsconfig.json
 
 But if things are not working as expected you can configure esbuild-node-tsc by adding `etsc.config.js` along side tsconfig.json.
 
-> You might need to install `esbuild-plugin-tsc` package too to use the esbuild tsc plugin
-
 Example `etsc.config.js`
 
 ```js
-const esbuildPluginTsc = require("esbuild-plugin-tsc");
-
 module.exports = {
-  outDir: "./dist",
+  // Supports all esbuild.build options
   esbuild: {
     minify: false,
     target: "es2015",
-    plugins: [esbuildPluginTsc()],
   },
-  assets: {
-    baseDir: "src",
-    outDir: "./dist",
-    filePatterns: ["**/*.json"],
+  // Prebuild hook
+  prebuild: async () => {
+    console.log("prebuild");
+    const rimraf = (await import("rimraf")).default;
+    rimraf.sync("./dist"); // clean up dist folder
   },
-};
-```
-
-or if you use ESM in your project then use
-
-```js
-import esbuildPluginTsc from "esbuild-plugin-tsc";
-
-export default {
-  outDir: "./dist",
-  esbuild: {
-    minify: false,
-    target: "es2015",
-    plugins: [esbuildPluginTsc()],
-  },
-  assets: {
-    baseDir: "src",
-    outDir: "./dist",
-    filePatterns: ["**/*.json"],
+  // Postbuild hook
+  postbuild: async () => {
+    console.log("postbuild");
+    const cpy = (await import("cpy")).default;
+    await cpy(
+      [
+        "src/**/*.graphql", // Copy all .graphql files
+        "!src/**/*.{tsx,ts,js,jsx}", // Ignore already built files
+      ],
+      "dist"
+    );
   },
 };
 ```
