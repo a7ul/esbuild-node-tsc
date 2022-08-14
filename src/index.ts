@@ -58,15 +58,15 @@ function getEsbuildMetadata(userConfig: Config) {
   const { tsConfig, tsConfigFile } = getTSConfig(userConfig.tsConfigFile);
   const esbuildConfig = userConfig.esbuild || {};
 
-  const outdir = tsConfig.options.outDir || esbuildConfig.outdir || "dist";
+  const outdir = esbuildConfig.outdir || tsConfig.options.outDir || "dist";
   const srcFiles = [
-    ...tsConfig.fileNames,
     ...((esbuildConfig.entryPoints as string[]) ?? []),
+    ...tsConfig.fileNames,
   ];
   const sourcemap =
-    esBuildSourceMapOptions(tsConfig) || userConfig.esbuild?.sourcemap;
+    userConfig.esbuild?.sourcemap || esBuildSourceMapOptions(tsConfig);
   const target: string =
-    tsConfig?.raw?.compilerOptions?.target || esbuildConfig?.target || "es2015";
+    esbuildConfig?.target || tsConfig?.raw?.compilerOptions?.target || "es2015";
 
   const esbuildOptions = {
     ...userConfig.esbuild,
