@@ -106,12 +106,34 @@ By default esbuild-node-tsc should work out of the box for your project since it
 
 But if things are not working as expected you can configure esbuild-node-tsc by adding `etsc.config.js` along side tsconfig.json.
 
+> You might need to install `esbuild-plugin-tsc` package too to use the esbuild tsc plugin
+
 Example `etsc.config.js`
 
 ```js
 const esbuildPluginTsc = require("esbuild-plugin-tsc");
 
 module.exports = {
+  outDir: "./dist",
+  esbuild: {
+    minify: false,
+    target: "es2015",
+    plugins: [esbuildPluginTsc()],
+  },
+  assets: {
+    baseDir: "src",
+    outDir: "./dist",
+    filePatterns: ["**/*.json"],
+  },
+};
+```
+
+or if you use ESM in your project then use
+
+```js
+import esbuildPluginTsc from "esbuild-plugin-tsc";
+
+export default {
   outDir: "./dist",
   esbuild: {
     minify: false,

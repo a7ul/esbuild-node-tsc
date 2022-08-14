@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import ts, { BuildOptions } from "typescript";
-import { build } from "esbuild";
+import ts from "typescript";
+import { build, BuildOptions as EsBuildOptions } from "esbuild";
 import cpy from "cpy";
 import path from "path";
 import rimraf from "rimraf";
@@ -58,27 +58,30 @@ function esBuildSourceMapOptions(tsConfig: TSConfig) {
 
 function getBuildMetadata(userConfig: Config) {
   const { tsConfig, tsConfigFile } = getTSConfig(userConfig.tsConfigFile);
+  const esbuildConfig = userConfig.esbuild || {};
 
-  const outDir = userConfig.outDir || tsConfig.options.outDir || "dist";
+  const outDir =
+    userConfig.outDir ||
+    tsConfig.options.outDir ||
+    esbuildConfig.outdir ||
+    "dist";
 
-  const esbuildEntryPoints = userConfig.esbuild?.entryPoints || [];
-  const srcFiles = [...tsConfig.fileNames, ...esbuildEntryPoints];
-  const sourcemap = esBuildSourceMapOptions(tsConfig);
+  const srcFiles = [
+    ...tsConfig.fileNames,
+    ...((esbuildConfig.entryPoints as string[]) ?? []),
+  ];
+  const sourcemap =
+    esBuildSourceMapOptions(tsConfig) || userConfig.esbuild?.sourcemap;
   const target =
-    userConfig.esbuild?.target ||
-    tsConfig?.raw?.compilerOptions?.target ||
-    "es6";
-  const minify = userConfig.esbuild?.minify || false;
-  const plugins = userConfig.esbuild?.plugins || [];
-  const format = userConfig.esbuild?.format || "cjs";
+    tsConfig?.raw?.compilerOptions?.target || esbuildConfig?.target || "es2015";
+  const format = esbuildConfig?.format || "cjs";
 
-  const esbuildOptions: BuildOptions = {
+  const esbuildOptions: EsBuildOptions = {
+    ...userConfig.esbuild,
     outdir: outDir,
     entryPoints: srcFiles,
     sourcemap,
     target,
-    minify,
-    plugins,
     tsconfig: tsConfigFile,
     format,
   };
@@ -88,13 +91,13 @@ function getBuildMetadata(userConfig: Config) {
   const assetsOptions = {
     baseDir: userConfig.assets?.baseDir || "src",
     outDir: userConfig.assets?.outDir || outDir,
-    patterns: [...assetPatterns, `!**/*.{ts,js,tsx,jsx}`],
+    patterns: [...assetPatterns, "!**/*.{ts,js,tsx,jsx}"],
   };
 
   return { outDir, esbuildOptions, assetsOptions };
 }
 
-async function buildSourceFiles(esbuildOptions: Partial<BuildOptions>) {
+async function buildSourceFiles(esbuildOptions: EsBuildOptions) {
   return await build({
     bundle: false,
     format: "cjs",
@@ -111,14 +114,12 @@ async function copyNonSourceFiles({
   patterns,
 }: AssetsOptions) {
   const relativeOutDir = path.relative(baseDir, outDir);
-  return await cpy(patterns, relativeOutDir, {
-    cwd: baseDir,
-  });
+  return await cpy(patterns, relativeOutDir, { cwd: baseDir });
 }
 
 async function main() {
   const configFilename = <string>(await argv)?.config || "etsc.config.js";
-  const clean = <boolean>(await argv)?.clean || false;
+  const clean = (await argv)?.clean;
   const config = await readUserConfig(path.resolve(cwd, configFilename));
 
   const { outDir, esbuildOptions, assetsOptions } = getBuildMetadata(config);
