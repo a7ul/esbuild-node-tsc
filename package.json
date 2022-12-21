@@ -2,6 +2,15 @@
   "name": "esbuild-node-tsc",
   "description": "Build your Typescript Node.js projects using blazing fast esbuild",
   "version": "2.0.4",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a7ul/esbuild-node-tsc.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/a7ul/esbuild-node-tsc/issues"
+  },
+  "homepage": "https://github.com/a7ul/esbuild-node-tsc#readme"
   "main": "./dist/index.js",
   "bin": {
     "esbuild-node-tsc": "dist/index.js",
