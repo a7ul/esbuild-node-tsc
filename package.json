@@ -10,7 +10,7 @@
   "bugs": {
     "url": "https://github.com/a7ul/esbuild-node-tsc/issues"
   },
-  "homepage": "https://github.com/a7ul/esbuild-node-tsc#readme"
+  "homepage": "https://github.com/a7ul/esbuild-node-tsc#readme",
   "main": "./dist/index.js",
   "bin": {
     "esbuild-node-tsc": "dist/index.js",
@@ -32,13 +32,13 @@
     "typescript"
   ],
   "devDependencies": {
-    "@types/node": "^18.7.21",
-    "@types/yargs": "^17.0.13",
-    "esbuild": "^0.15.9",
-    "typescript": "^4.8.3"
+    "@types/node": "^18.11.18",
+    "@types/yargs": "^17.0.19",
+    "esbuild": "^0.16.14",
+    "typescript": "^4.9.4"
   },
   "dependencies": {
-    "yargs": "^17.5.1"
+    "yargs": "^17.6.2"
   },
   "peerDependencies": {
     "esbuild": ">=0.13.0",
